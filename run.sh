@@ -76,11 +76,24 @@ mkdir -p "${proc_dir}"
 
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-source "${scriptdir}/venv/alt_text/bin/activate"
+# source "${scriptdir}/venv/alt_text/bin/activate"
 
-"${scriptdir}/extract_image_alt_text.py" \
-  -o "${output_dir}/{/.}_alt_text.csv" \
-  -p "${proc_dir}" \
-  "{}" :::: "${input_list}"
+# parallel \
+#   --sshloginfile "${scriptdir}/machines.txt" \
+#   --progress \
+#   --results "${proc_dir}/$(date +"%Y-%m-%dT%H:%M:%S")" \
+#     -- "${scriptdir}/extract_image_alt_text.py" \
+#        -o "${output_dir}/{/.}_alt_text.csv" \
+#        -p "${proc_dir}" \
+#        "{}" :::: "${input_list}"
+parallel \
+  --sshloginfile "${scriptdir}/machines.txt" \
+  -j8 \
+  --progress \
+  --results "${proc_dir}/$(date +"%Y-%m-%dT%H:%M:%S")" \
+    -- "${scriptdir}/extract_image_alt_text.py" \
+       -o "${output_dir}/{/.}_alt_text.csv" \
+       "{}" :::: "${input_list}"
 
 exit 0
+
