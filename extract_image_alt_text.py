@@ -43,18 +43,35 @@ FILE_LINK_RE = re.compile(
 )
 
 
-def normalize_commons_filename(filename):
+def get_commons_filename_from_image_url(image_url):
     """
-    Normalizes a filename as Commons/MediaWiki would usually display it:
-    spaces become underscores, repeated underscores are collapsed,
-    and the first character is capitalized.
-    """
-    filename = normalize_filename(filename)
+    Extracts the Commons filename from Wikimedia image URLs, preserving capitalization.
 
-    if not filename:
+    Handles URLs such as:
+    - https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Foo.jpg/250px-Foo.jpg
+      -> Foo.jpg
+    - https://upload.wikimedia.org/wikipedia/commons/8/86/Foo.jpg
+      -> Foo.jpg
+
+    In Wikimedia thumbnail URLs, the original Commons filename is the last
+    directory in the path, i.e. the second-to-last path component.
+    """
+    if not image_url:
         return ""
 
-    return filename[0].upper() + filename[1:]
+    image_url = unescape(image_url)
+    image_url = unquote(image_url)
+
+    path = image_url.split("?", 1)[0].split("#", 1)[0]
+    parts = [part for part in path.split("/") if part]
+
+    if not parts:
+        return ""
+
+    if "thumb" in parts and len(parts) >= 2:
+        return parts[-2]
+
+    return parts[-1]
 
 
 def normalize_filename(filename):
@@ -281,7 +298,7 @@ def process_file(path, base_url, quiet=False, progress_bar=None, filter_body_ima
                     "page_id": page_id,
                     "page_title": page_title,
                     "image_url": image["image_url"],
-                    "image_filename": normalize_commons_filename(image['image_filename']),
+                    "image_filename": get_commons_filename_from_image_url(image['image_url']),
                     "has_alt_text": image["has_alt_text"],
                     "alt_text": image["alt_text"],
                 }
