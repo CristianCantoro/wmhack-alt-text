@@ -1,6 +1,9 @@
 # ignore data dir and csv files
 data/
-*.csv
+*.{csv,tsv}
+
+# ignore chunk lists
+*_chunks.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
