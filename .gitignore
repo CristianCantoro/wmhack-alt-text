@@ -5,6 +5,9 @@ data/
 # ignore chunk lists
 *_chunks.txt
 
+# ignore machines.txt file
+machines.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
