@@ -1,4 +1,4 @@
-#!/shares/volDISI_Montresor/fluidfs-prod2/cconsonni/wmhack-alt-text/repo/venv/alt_text/bin/python3
+#!/usr/bin/env python3
 
 import argparse
 import csv
