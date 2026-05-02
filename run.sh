@@ -24,10 +24,12 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     -o|--output)
       output_dir="${2:-}"
+      output_dir="$(realpath ${output_dir})"
       shift 2
       ;;
     -p|--proc-dir)
       proc_dir="${2:-}"
+      proc_dir="$(realpath ${proc_dir})"
       shift 2
       ;;
     -h|--help)
